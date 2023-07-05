@@ -1,0 +1,160 @@
+:root {
+        --main-color: hsl(24, 20%, 95%);
+        --main-padding: 5px;
+        --main-margin: 10px;
+        --main-font-family: 'verdana';
+        --main-font-size: 16px;
+        --main-hover-color: hsl(24, 20%, 90%);
+}
+
+* {
+        user-select: none;
+}
+
+#pattern-container,
+#sol-description-container {
+        margin-top: var(--main-margin);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--main-margin);
+}
+
+div,
+input,
+button {
+        font-family: var(--main-font-family);
+        font-size: var(--main-font-size);
+}
+
+.pattern-card {
+        background-color: var(--main-color);
+}
+
+.pattern-card:hover {
+        scale: 1.1;
+}
+
+.creational {
+        border: 5px solid hsl(192, 77%, 94%);
+}
+
+.behavioral {
+        border: 5px solid hsl(80, 77%, 94%);
+}
+
+.structural {
+        border: 5px solid #fbe4e4;
+}
+
+button {
+
+        background-color: var(--main-color);
+        border: none;
+        border: 5px solid var(--main-color);
+}
+
+button:hover {
+        background-color: var(--main-hover-color);
+        border: 5px solid var(--main-hover-color);
+}
+
+#solDescription-container {
+
+        font-style: italic;
+}
+
+input {
+        border-radius: 0px;
+        border: 5px solid var(--main-color);
+}
+
+#score {
+        pointer-events: none;
+}
+
+#result-board {
+        text-align: center;
+}
+
+.heartbeat {
+        -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
+        animation: heartbeat 1.5s ease-in-out infinite both;
+}
+
+@-webkit-keyframes heartbeat {
+        from {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                -webkit-transform-origin: center center;
+                transform-origin: center center;
+                -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        }
+
+        10% {
+                -webkit-transform: scale(0.91);
+                transform: scale(0.91);
+                -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+        }
+
+        17% {
+                -webkit-transform: scale(0.98);
+                transform: scale(0.98);
+                -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        }
+
+        33% {
+                -webkit-transform: scale(0.87);
+                transform: scale(0.87);
+                -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+        }
+
+        45% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        }
+}
+
+@keyframes heartbeat {
+        from {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                -webkit-transform-origin: center center;
+                transform-origin: center center;
+                -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        }
+
+        10% {
+                -webkit-transform: scale(0.91);
+                transform: scale(0.91);
+                -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+        }
+
+        17% {
+                -webkit-transform: scale(0.98);
+                transform: scale(0.98);
+                -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        }
+
+        33% {
+                -webkit-transform: scale(0.87);
+                transform: scale(0.87);
+                -webkit-animation-timing-function: ease-in;
+                animation-timing-function: ease-in;
+        }
+
+        45% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                -webkit-animation-timing-function: ease-out;
+                animation-timing-function: ease-out;
+        }
+}
