@@ -12,6 +12,7 @@ G.patternContainer = document.querySelector("#pattern-container");
 G.solDescriptionContainer = document.querySelector("#sol-description-container")
 G.answerInput = document.querySelector("#answer-input");
 G.submitBtn = document.querySelector("#submit-btn");
+G.infoBoard = document.querySelector("#info-board");
 
 
 class Question {
@@ -155,15 +156,14 @@ class level3Hint {
 
 //======================================================
 //main
-
 askQestion();
+G.infoBoard.style.display = "block"; //infos only show up after the question is asked, prevents flickering
 
-G.hintBtn.addEventListener("click", () => {
-    G.currentQuestion.revealHint();
-});
+G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
 
-document.querySelector("#submit-btn").addEventListener("click", () => {
-    // G.submitBtn.disabled = true;
+//======================================================
+//functions
+function submitAnswer() {
     storeAnswer(G.answerInput.value);
     evaluateResult();
     if (G.alreadyAskedQuestionIndecies.length === G.questionsJSONRepres.length) {
@@ -174,11 +174,10 @@ document.querySelector("#submit-btn").addEventListener("click", () => {
     setTimeout(() => {
         askQestion();
     }, 500);
-});
 
+    this.removeEventListener("click", submitAnswer);
+}
 
-//======================================================
-//functions
 function showResultBoard() {
     G.resultBoard.style.opacity = 0;
     G.resultBoard.style.position = "absolute";
@@ -215,7 +214,10 @@ function askQestion() {
     G.hintBtn.style.pointerEvents = "auto";
     G.hintBtn.innerText = "Hint: 3";
     G.answerInput.value = "";
-    // G.submitBtn.disabled = false;
+    
+    setTimeout(() => {
+    G.submitBtn.addEventListener("click", submitAnswer); // submit answer removes itself after it is clicked
+    }, 500);
 }
 
 function storeAnswer(p_answer) {

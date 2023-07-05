@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>dPatterns</title>
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/prism.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/components/prism-csharp.js"></script>
@@ -13,23 +13,24 @@
 </head>
 
 <body>
-
     <div id="code-container">
         <pre><code class="language-csharp fade-in">
             <!-- generated content -->
         </code></pre>
     </div>
 
-    <button id="hint-btn">Hint: 3</button>
-    <input type="text" name="" id="answer-input" placeholder="Answer">
-    <button id="submit-btn">Submit</button>
-    <button id="score">Score: 0 / 0</button>
-
-    <div id="pattern-container"> </div>
-
-    <div id="sol-description-container"> </div>
-
-    <div id="result-board" style="display: none;">Result</div>
+    <div id="info-board" style="display: none;">
+        <button id="hint-btn">Hint: 3</button>
+        <input type="text" name="" id="answer-input" placeholder="Answer">
+        <button id="submit-btn">Submit</button>
+        <button id="score">Score: 0 / 0</button>
+    
+        <div id="pattern-container"> </div>
+    
+        <div id="sol-description-container"> </div>
+    
+        <div id="result-board" style="display: none;">Result</div>
+    </div>
 
     <script src="data.js"></script>
     <script src="main.js"></script>
