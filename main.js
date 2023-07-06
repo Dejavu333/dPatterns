@@ -1,4 +1,6 @@
-//GLOBAL VARIABLES
+//======================================================
+// global variables
+//======================================================
 G.alreadyAskedQuestionIndecies = [];
 G.givenAnswers = [];
 G.currentQuestion = null;
@@ -13,8 +15,11 @@ G.solDescriptionContainer = document.querySelector("#sol-description-container")
 G.answerInput = document.querySelector("#answer-input");
 G.submitBtn = document.querySelector("#submit-btn");
 G.infoBoard = document.querySelector("#info-board");
+G.usedHintCount = 0;
 
-
+//======================================================
+// classes
+//======================================================
 class Question {
     content = "";
     answer = "";
@@ -41,6 +46,7 @@ class Question {
         if (this.hintLevel >= this.hints.length) { console.log("No more hints"); return; }
         this.hints[this.hintLevel].reveal(this.answer);
         this.hintLevel++;
+        G.usedHintCount++;
         scrollToBottom(500);
     }
 }
@@ -68,7 +74,7 @@ class level1Hint {
             <div class="inner-pattern-card">
                 <span class="card-title">${pattern.name}</span>
             </div>
-        </div>
+            </div>
             `;
             if (pattern.name === p_answer) {
                 card.classList.add("answer");
@@ -100,7 +106,7 @@ class level2Hint {
             }
         });
         let patternCards = document.querySelectorAll(`.creational, .structural, .behavioral`);
-      //remove all cards that are not the correct category
+        //remove all cards which are not the correct category
         patternCards.forEach((card) => {
             if (!card.classList.contains(solCategory.toLowerCase())) {
                 card.style.opacity = "0.3";
@@ -155,14 +161,17 @@ class level3Hint {
 
 
 //======================================================
-//main
+// main
+//======================================================
+
 askQestion();
 G.infoBoard.style.display = "block"; //infos only show up after the question is asked, prevents flickering
 
 G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
 
 //======================================================
-//functions
+// functions
+//======================================================
 function submitAnswer() {
     storeAnswer(G.answerInput.value);
     evaluateResult();
@@ -239,8 +248,9 @@ function evaluateResult() {
         setTimeout(() => { G.score.style.color = lastColor } , 300);
     }
     
-    G.score.innerText = `Score: ${G.correctAnswerCount} / ${G.alreadyAskedQuestionIndecies.length}`
-    console.log(`You got ${G.correctAnswerCount} out of ${G.alreadyAskedQuestionIndecies.length} correct.`);
+    const currentScore = Math.max(0, G.correctAnswerCount * 4 - G.usedHintCount); //if negative returns 0
+    const totalScore = G.alreadyAskedQuestionIndecies.length*4
+    G.score.innerText = `Score: ${currentScore} / ${totalScore}`
 }
 
 function randomQuestionJSONRepres(p_data) {
