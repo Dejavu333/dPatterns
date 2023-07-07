@@ -17,6 +17,7 @@ G.submitBtn = document.querySelector("#submit-btn");
 G.infoBoard = document.querySelector("#info-board");
 G.usedHintCount = 0;
 
+
 //======================================================
 // classes
 //======================================================
@@ -53,7 +54,9 @@ class Question {
 
 class level1Hint {
     reveal(p_answer) {
-        this.addPatternCardsToDOM(G.patterns);
+        disableInputSuggestions();
+        removeAllPatternCardsFromDOM(); // if there are any
+        this.addPatternCardsToDOM(G.patterns, p_answer);
         G.hintBtn.innerText = "Hint: 2";
     }
 
@@ -66,29 +69,35 @@ class level1Hint {
     }
 
     addPatternCardsToDOM(p_data, p_answer) {
-        const d = G.patternContainer
-        d.style.opacity = 0;
-        p_data.forEach((pattern) => {
-            const cardHTML = `
-            <div class="pattern-card ${pattern.category.toLowerCase()}">
-            <div class="inner-pattern-card">
-                <span class="card-title">${pattern.name}</span>
-            </div>
-            </div>
-            `;
-            if (pattern.name === p_answer) {
-                card.classList.add("answer");
-            }
-            d.innerHTML += cardHTML;
-        });//forEach
-
-       EaseIn(d);
-
-        document.querySelectorAll(".pattern-card").forEach((card) => {
-            card.addEventListener("click", (e) => {
-                G.answerInput.value = card.querySelector(".card-title").innerText;
-            });
+        G.patternContainer.style.opacity = 0;
+        p_data.forEach((patternDataObj) => {
+            addPatternCardToDOM(patternDataObj, p_answer);
         });
+
+       EaseIn(G.patternContainer);
+    }
+}
+
+function addPatternCardToDOM(p_patternDataObj,p_easeIn=false) {
+    const cardHTML = `
+    <div id="${p_patternDataObj.name}" class="pattern-card ${p_patternDataObj.category.toLowerCase()}">
+    <div class="inner-pattern-card">
+        <span class="card-title">${p_patternDataObj.name}</span>
+    </div>
+    </div>
+    `;
+    G.patternContainer.insertAdjacentHTML('beforeend', cardHTML);
+
+    const card = document.getElementById(p_patternDataObj.name);
+    card.addEventListener("click", (e) => {
+        console.log(e.target);
+        G.answerInput.value = card.querySelector(".card-title").innerText;
+    });
+    // if (p_patternDataObj.name === p_answer) {
+    //     card.classList.add("answer");
+    // }
+    if(p_easeIn){
+        EaseIn(card);
     }
 }
 
@@ -163,11 +172,12 @@ class level3Hint {
 //======================================================
 // main
 //======================================================
-
 askQestion();
 G.infoBoard.style.display = "block"; //infos only show up after the question is asked, prevents flickering
 
 G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
+G.answerInput.addEventListener('input', handleInput);
+G.answerInput.addEventListener('keydown', handleKeyDown);
 
 //======================================================
 // functions
@@ -236,7 +246,7 @@ function storeAnswer(p_answer) {
 function evaluateResult() {
     const lastAnswer = G.givenAnswers[G.givenAnswers.length - 1];
     const lastQuestionIndex = G.alreadyAskedQuestionIndecies[G.alreadyAskedQuestionIndecies.length - 1];
-    const isCorrect = lastAnswer.toLowerCase() === G.questionsJSONRepres[lastQuestionIndex].answer.toLowerCase();
+    const isCorrect = lastAnswer.toLowerCase().trim() === G.questionsJSONRepres[lastQuestionIndex].answer.toLowerCase().trim();
     const lastColor = G.score.style.color;
     if (isCorrect) {
         G.correctAnswerCount++;
@@ -322,4 +332,61 @@ function scrollToBottom(duration) {
     }
     
     window.requestAnimationFrame(scrollStep);
+}
+
+let currentSuggestions = {};
+function handleInput() {
+    const inputText = G.answerInput.value.toLowerCase().trim();
+    if (inputText.length >= 2) { 
+        const matchingPatternDataObjs = G.patterns.filter(patternDataObj => patternDataObj.name.toLowerCase().startsWith(inputText))
+        if (matchingPatternDataObjs.length==0) return;
+
+        matchingPatternDataObjs.forEach(patternDataObj => {
+            let alreadInSuggestions = currentSuggestions[patternDataObj.name];
+            if (!alreadInSuggestions) {
+                addPatternCardToDOM(patternDataObj,true);
+                currentSuggestions[patternDataObj.name] = true;
+            }
+        });
+        // remove suggestions that are no longer valid
+        Object.keys(currentSuggestions).forEach(key => {
+            if (!matchingPatternDataObjs.find(patternDataObj => patternDataObj.name === key)|| currentSuggestions[key]===false) {
+                removePatternCardFromDOM(key);
+                currentSuggestions[key] = false;
+            }
+        });
+
+    } else {
+        currentSuggestions = {};
+        removeAllPatternCardsFromDOM();
+    }
+}
+
+function removePatternCardFromDOM(p_patternName) {
+    const cards = document.querySelectorAll('.pattern-card');
+    cards.forEach(card => { 
+        if (card.innerHTML.includes(p_patternName)) 
+            {card.remove()
+        } 
+    });
+}
+
+let tabInd = 0;
+function handleKeyDown(event) {
+    if (event.key === 'Tab') {
+        event.preventDefault();
+        const cards = document.querySelectorAll('.pattern-card');
+        if (cards.length > 0) {
+        G.answerInput.value = cards[tabInd].querySelector('.card-title').textContent;
+        tabInd = (tabInd + 1) % cards.length;
+        }
+    }
+}
+
+function disableInputSuggestions() {
+    G.answerInput.removeEventListener('input', handleInput);
+}
+
+function removeAllPatternCardsFromDOM() {
+    G.patternContainer.innerHTML = '';
 }
