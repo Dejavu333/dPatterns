@@ -176,9 +176,6 @@ askQestion();
 G.infoBoard.style.display = "block"; //infos only show up after the question is asked, prevents flickering
 
 G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
-G.answerInput.addEventListener('input', handleInput);
-G.answerInput.addEventListener('keydown', handleKeyDown);
-
 //======================================================
 // functions
 //======================================================
@@ -192,7 +189,7 @@ function submitAnswer() {
     }
     setTimeout(() => {
         askQestion();
-    }, 500);
+    }, 1000);
 
     this.removeEventListener("click", submitAnswer);
 }
@@ -235,7 +232,9 @@ function askQestion() {
     G.answerInput.value = "";
     
     setTimeout(() => {
-    G.submitBtn.addEventListener("click", submitAnswer); // submit answer removes itself after it is clicked
+        G.submitBtn.addEventListener("click", submitAnswer); // submit answer removes itself after it is clicked
+        G.answerInput.addEventListener('input', handleInput);
+        G.answerInput.addEventListener('keydown', handleKeyDown);
     }, 500);
 }
 
@@ -380,6 +379,11 @@ function handleKeyDown(event) {
         G.answerInput.value = cards[tabInd].querySelector('.card-title').textContent;
         tabInd = (tabInd + 1) % cards.length;
         }
+    }
+    else if (event.key === 'Enter') {
+        submitAnswer();
+        G.answerInput.blur();
+        tabInd = 0;        
     }
 }
 
