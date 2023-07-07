@@ -7,6 +7,10 @@
         --main-hover-color: hsl(24, 20%, 90%);
 }
 
+.operator {
+        background-color: transparent !important;
+}
+
 * {
         user-select: none;
 }
@@ -35,11 +39,11 @@ button {
 }
 
 .creational {
-        border: 5px solid hsl(192, 77%, 94%);
+        border: 5px solid #e4f7fb;
 }
 
 .behavioral {
-        border: 5px solid hsl(80, 77%, 94%);
+        border: 5px solid #f4fbe4;
 }
 
 .structural {
