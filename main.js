@@ -180,6 +180,7 @@ G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
 // functions
 //======================================================
 function submitAnswer() {
+    tabInd = 0;
     storeAnswer(G.answerInput.value);
     evaluateResult();
     if (G.alreadyAskedQuestionIndecies.length === G.questionsJSONRepres.length) {
@@ -382,8 +383,7 @@ function handleKeyDown(event) {
     }
     else if (event.key === 'Enter') {
         submitAnswer();
-        G.answerInput.blur();
-        tabInd = 0;        
+        G.answerInput.blur();        
     }
 }
 
