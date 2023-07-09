@@ -243,22 +243,27 @@ function storeAnswer(p_answer) {
     G.givenAnswers.push(p_answer);
 }
 
+let lastScore = 0;
 function evaluateResult() {
     const lastAnswer = G.givenAnswers[G.givenAnswers.length - 1];
     const lastQuestionIndex = G.alreadyAskedQuestionIndecies[G.alreadyAskedQuestionIndecies.length - 1];
     const isCorrect = lastAnswer.toLowerCase().trim() === G.questionsJSONRepres[lastQuestionIndex].answer.toLowerCase().trim();
     const lastColor = G.score.style.color;
+    let currentScore = 0;
     if (isCorrect) {
         G.correctAnswerCount++;
+        currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); //if negative returns 0
+        lastScore = currentScore;
         G.submitBtn.color = "green"; G.score.style.color = "green";
         setTimeout(() => { G.score.style.color = lastColor }, 300);
     }
     else if(!isCorrect) {
+        currentScore = lastScore;
         G.submitBtn.color = "red";G.score.style.color = "red";
         setTimeout(() => { G.score.style.color = lastColor } , 300);
     }
     
-    const currentScore = Math.max(0, G.correctAnswerCount * 4 - G.usedHintCount); //if negative returns 0
+    // const currentScore = Math.max(0, G.correctAnswerCount * 4 - G.usedHintCount);
     const totalScore = G.alreadyAskedQuestionIndecies.length*4
     G.score.innerText = `Score: ${currentScore} / ${totalScore}`
 }
