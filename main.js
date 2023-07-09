@@ -115,7 +115,7 @@ class level2Hint {
             }
         });
         let patternCards = document.querySelectorAll(`.creational, .structural, .behavioral`);
-        //remove all cards which are not the correct category
+        // removes all cards which are not the correct category
         patternCards.forEach((card) => {
             if (!card.classList.contains(solCategory.toLowerCase())) {
                 card.style.opacity = "0.3";
@@ -173,9 +173,11 @@ class level3Hint {
 // main
 //======================================================
 askQestion();
-G.infoBoard.style.display = "block"; //infos only show up after the question is asked, prevents flickering
+G.infoBoard.style.display = "block"; // infos only show up after the question is asked, prevents flickering
 
 G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
+
+
 //======================================================
 // functions
 //======================================================
@@ -200,20 +202,16 @@ function showResultBoard() {
     G.resultBoard.style.position = "absolute";
     G.resultBoard.style.display = "block";
     // places it in the middle of the current viewport not the whole page
-    G.resultBoard.style.top = "50%";
-    G.resultBoard.style.left = "50%";
-    G.resultBoard.style.transform = "translate(-50%, -50%)";
+    G.resultBoard.style.top = `${window.scrollY + window.innerHeight / 2}px`;
+    G.resultBoard.style.left = `${window.innerWidth / 2}px`;
 
     const result = Math.round((G.correctAnswerCount / G.givenAnswers.length) * 100);
     G.resultBoard.innerHTML = `<div class="heartbeat">You reached ${result}%</div><br><button id="restart-btn">Restart</button>`;
-    const elementsInBody = [...document.body.children];
-    elementsInBody.forEach((child) => {
-        if (child.id !== "result-board"){
-            child.style.opacity = "0.3";
-            child.style.pointerEvents = "none";
-        }
-    
-    });
+    // puts an opaq white background behind the result board and everything else
+    const opaqueBackground = document.createElement("div");
+    opaqueBackground.id = "opaque-background";
+    G.resultBoard.parentElement.insertBefore(opaqueBackground, G.resultBoard);
+    document.body.style.overflow = "hidden";
     EaseIn(G.resultBoard);
     document.querySelector("#restart-btn").addEventListener("click", () => {
         location.reload();
@@ -234,7 +232,7 @@ function askQestion() {
     G.answerInput.value = "";
     
     setTimeout(() => {
-        G.submitBtn.addEventListener("click", submitAnswer); // submit answer removes itself after it is clicked
+        G.submitBtn.addEventListener("click", submitAnswer); // because submit answer removes itself after it is clicked
         G.answerInput.addEventListener('input', handleInput);
         G.answerInput.addEventListener('keydown', handleKeyDown);
     }, 500);
@@ -253,7 +251,7 @@ function evaluateResult() {
     let currentScore = 0;
     if (isCorrect) {
         G.correctAnswerCount++;
-        currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); //if negative returns 0
+        currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); // if negative returns 0
         lastScore = currentScore;
         G.submitBtn.color = "green"; G.score.style.color = "green";
         setTimeout(() => { G.score.style.color = lastColor }, 300);
@@ -264,7 +262,6 @@ function evaluateResult() {
         setTimeout(() => { G.score.style.color = lastColor } , 300);
     }
     
-    // const currentScore = Math.max(0, G.correctAnswerCount * 4 - G.usedHintCount);
     const totalScore = G.alreadyAskedQuestionIndecies.length*4
     G.score.innerText = `Score: ${currentScore} / ${totalScore}`
 }
@@ -282,7 +279,7 @@ function EaseIn(p_div) {
     let div = p_div
     div.style.opacity = 0;
 
-    // Define the animation
+    // defines the animation
     (function ease() {
         div.style.opacity = parseFloat(div.style.opacity) + 0.01;
         if (div.style.opacity < 1) {
@@ -354,7 +351,7 @@ function handleInput() {
                 currentSuggestions[patternDataObj.name] = true;
             }
         });
-        // remove suggestions that are no longer valid
+        // removes suggestions that are no longer valid
         Object.keys(currentSuggestions).forEach(key => {
             if (!matchingPatternDataObjs.find(patternDataObj => patternDataObj.name === key)|| currentSuggestions[key]===false) {
                 removePatternCardFromDOM(key);

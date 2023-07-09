@@ -151,3 +151,12 @@ input {
                 animation-timing-function: ease-out;
         }
 }
+
+#opaque-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        min-height: 300vh;
+        background-color: rgba(255,255,255,0.8);
+}
