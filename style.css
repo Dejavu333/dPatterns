@@ -1,18 +1,46 @@
 :root {
         --main-color: hsl(24, 20%, 95%);
+        --main-hover-color: hsl(24, 20%, 90%);
         --main-padding: 5px;
         --main-margin: 10px;
         --main-font-family: 'verdana';
         --main-font-size: 16px;
-        --main-hover-color: hsl(24, 20%, 90%);
+        --green-color: #4caf50;
+        --red-color: #bc5150;
+        --blue-color: #165b8d;
+        --orange-color: #bc8650;
+
+        --font-color: rgb(45, 45, 45);
+        --grey-color: #999999;
+        --cian-color: #3cc3aa;
 }
 
 .operator {
         background-color: transparent !important;
+        color: var(--grey-color) !important;
+}
+code {
+        color: var(--font-color) !important;
+}
+.comment {
+        color: var(--green-color) !important;
+}
+.keyword {
+        color: var(--blue-color) !important;
+}
+.string {
+        color: var(--orange-color) !important;
+}
+.number {
+        color: var(--font-color) !important;
+}
+.class-name {
+        color: var(--cian-color) !important;
 }
 
 * {
         user-select: none;
+        color: var(--font-color);
 }
 
 #pattern-container,
