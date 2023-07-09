@@ -253,12 +253,12 @@ function evaluateResult() {
         G.correctAnswerCount++;
         currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); // if negative returns 0
         lastScore = currentScore;
-        G.submitBtn.color = "green"; G.score.style.color = "green";
+        G.submitBtn.color = "#4caf50"; G.score.style.color = "#4caf50";
         setTimeout(() => { G.score.style.color = lastColor }, 300);
     }
     else if(!isCorrect) {
         currentScore = lastScore;
-        G.submitBtn.color = "red";G.score.style.color = "red";
+        G.submitBtn.color = "#bc5150";G.score.style.color = "#bc5150";
         setTimeout(() => { G.score.style.color = lastColor } , 300);
     }
     
@@ -359,12 +359,37 @@ function handleInput() {
             }
         });
         scrollToBottom(500)
-
-     
+    
     } else {
         currentSuggestions = {};
         removeAllPatternCardsFromDOM();
     }
+}
+
+let c = true;
+function scrollToBottomWarden() {
+    if (c==true) {
+        setTimeout(()=>{c=true;},800)
+        scrollToBottom(500);
+        c=false;
+    }
+}
+
+document.addEventListener("scroll", () => {
+    const inputElement = G.answerInput;
+    if (!isElementInViewport(inputElement)) {
+        inputElement.blur();
+    }
+});
+function isElementInViewport(p_inputElement) {
+    const rect = p_inputElement.getBoundingClientRect();
+    const breathingRoom = 30;
+    return (
+      rect.top >= 0-breathingRoom&&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + breathingRoom &&   
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
 }
 
 function removePatternCardFromDOM(p_patternName) {
