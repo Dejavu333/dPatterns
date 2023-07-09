@@ -208,9 +208,10 @@ function showResultBoard() {
     G.resultBoard.innerHTML = `<div class="heartbeat">You reached ${result}%</div><br><button id="restart-btn">Restart</button>`;
     const elementsInBody = [...document.body.children];
     elementsInBody.forEach((child) => {
+        if (child.id !== "result-board"){
             child.style.opacity = "0.3";
-            if (child.id !== "result-board"){
-            child.style.pointerEvents = "none";}
+            child.style.pointerEvents = "none";
+        }
     
     });
     EaseIn(G.resultBoard);
@@ -360,7 +361,9 @@ function handleInput() {
                 currentSuggestions[key] = false;
             }
         });
+        scrollToBottom(500)
 
+     
     } else {
         currentSuggestions = {};
         removeAllPatternCardsFromDOM();
