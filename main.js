@@ -7,6 +7,7 @@ G.currentQuestion = null;
 G.correctAnswerCount = 0;
 
 G.score = document.querySelector("#score");
+G.progressBar = document.querySelector("#progress-bar");
 G.resultBoard = document.querySelector("#result-board");
 G.hintBtn = document.querySelector("#hint-btn");
 G.code = document.querySelector("code");
@@ -168,13 +169,13 @@ class level3Hint {
     }
 }
 
-
+//todo check margins, guard on hint button, pulsing progress circle
 //======================================================
 // main
 //======================================================
 askQestion();
 G.infoBoard.style.display = "block"; // infos only show up after the question is asked, prevents flickering
-
+populateProgressBar(G.questionsJSONRepres.length);
 G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
 
 
@@ -195,6 +196,23 @@ function submitAnswer() {
     }, 1000);
 
     this.removeEventListener("click", submitAnswer);
+}
+
+function populateProgressBar(p_questionsNum) {
+    for (let i = 0; i < p_questionsNum; i++) {
+        const c = document.createElement("div");
+        c.opacity = 0;
+        c.classList.add("circle");
+        G.progressBar.appendChild(c);
+        setTimeout(() => {
+        EaseIn(c), 3000*i;
+        });
+    }
+}
+function addProgress(p_isAnswerCorrect, currentQuestionIndex=G.alreadyAskedQuestionIndecies.length-1) {
+    p_isAnswerCorrect==true?
+        G.progressBar.children[currentQuestionIndex].classList.add("greencirc"):
+        G.progressBar.children[currentQuestionIndex].classList.add("redcirc");
 }
 
 function showResultBoard() {
@@ -255,11 +273,13 @@ function evaluateResult() {
         lastScore = currentScore;
         G.submitBtn.color = "#4caf50"; G.score.style.color = "#4caf50";
         setTimeout(() => { G.score.style.color = lastColor }, 300);
+        addProgress(true);
     }
     else if(!isCorrect) {
         currentScore = lastScore;
         G.submitBtn.color = "#bc5150";G.score.style.color = "#bc5150";
         setTimeout(() => { G.score.style.color = lastColor } , 300);
+        addProgress(false);
     }
     
     const totalScore = G.alreadyAskedQuestionIndecies.length*4
@@ -289,7 +309,7 @@ function EaseIn(p_div) {
 }
 
 function scrollToTop(duration) {
-    var start = window.pageYOffset;
+    var start = window.scrollY;
     var startTime = performance.now();
 
     function scrollStep(timestamp) {
@@ -313,7 +333,7 @@ function scrollToTop(duration) {
 }
 
 function scrollToBottom(duration) {
-    var start = window.pageYOffset;
+    var start = window.scrollY;
     var end = document.documentElement.scrollHeight - window.innerHeight;
     var startTime = performance.now();
     
@@ -358,7 +378,7 @@ function handleInput() {
                 currentSuggestions[key] = false;
             }
         });
-        scrollToBottom(500)
+        scrollToBottomWarden(500,800);
     
     } else {
         currentSuggestions = {};
@@ -366,12 +386,12 @@ function handleInput() {
     }
 }
 
-let c = true;
-function scrollToBottomWarden() {
-    if (c==true) {
-        setTimeout(()=>{c=true;},800)
-        scrollToBottom(500);
-        c=false;
+let isTemporalLock = true;
+function scrollToBottomWarden(p_duration,p_lockingTime) {
+    if (isTemporalLock==true) {
+        setTimeout(()=>{isTemporalLock=true;},p_lockingTime)
+        scrollToBottom(p_duration);
+        isTemporalLock=false;
     }
 }
 

@@ -41,14 +41,21 @@ code {
 * {
         user-select: none;
         color: var(--font-color);
+        margin: none;
 }
+
+
 
 #pattern-container,
 #sol-description-container {
-        margin-top: var(--main-margin);
+        margin-top: var(--main-margin); 
         display: flex;
         flex-wrap: wrap;
         gap: var(--main-margin);
+}
+
+button,input {
+        margin: 0 !important;
 }
 
 div,
@@ -67,15 +74,15 @@ button {
 }
 
 .creational {
-        border: 5px solid #e4f7fb;
+        border: 5px solid hsla(1, 45%, 92%);
 }
 
 .behavioral {
-        border: 5px solid #f4fbe4;
+        border: 5px solid hsl(205, 73%, 92%);
 }
 
 .structural {
-        border: 5px solid #fbe4e4;
+        border: 5px solid hsl(169, 53%, 92%);
 }
 
 button {
@@ -160,3 +167,32 @@ input {
         min-height: 300vh;
         background-color: rgba(255,255,255,0.8);
 }
+
+#progress-bar {  
+        display: flex;
+        padding-top: var(--main-padding);
+        padding-bottom: var(--main-padding);
+    }
+    
+
+
+pre{
+        margin: 0 !important;
+}
+
+.circle {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: var(--main-color);
+        margin-right: var(--main-padding);
+      }
+  
+      .redcirc {
+        background-color: var(--red-color);
+      }
+  
+      .greencirc {
+        background-color: var(--cian-color);
+      }
