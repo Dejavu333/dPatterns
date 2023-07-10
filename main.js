@@ -17,7 +17,7 @@ G.answerInput = document.querySelector("#answer-input");
 G.submitBtn = document.querySelector("#submit-btn");
 G.infoBoard = document.querySelector("#info-board");
 G.usedHintCount = 0;
-
+const DEFAULT_DELAY = 500;
 
 //======================================================
 // classes
@@ -49,7 +49,7 @@ class Question {
         this.hints[this.hintLevel].reveal(this.answer);
         this.hintLevel++;
         G.usedHintCount++;
-        scrollToBottom(500);
+        scrollToBottom(DEFAULT_DELAY);
     }
 }
 
@@ -176,7 +176,7 @@ class level3Hint {
 askQestion();
 G.infoBoard.style.display = "block"; // infos only show up after the question is asked, prevents flickering
 populateProgressBar(G.questionsJSONRepres.length);
-G.hintBtn.addEventListener("click", () => G.currentQuestion.revealHint());
+G.hintBtn.addEventListener("click", () => functionWarden(()=>G.currentQuestion.revealHint(),DEFAULT_DELAY*4));
 
 
 //======================================================
@@ -237,7 +237,7 @@ function showResultBoard() {
 }
 
 function askQestion() {
-    scrollToTop(500);
+    scrollToTop(DEFAULT_DELAY);
     if (G.currentQuestion) G.currentQuestion.removeHints();
     let questionJSONRepres = randomQuestionJSONRepres(G.questionsJSONRepres);
     G.currentQuestion = new Question(questionJSONRepres.content, questionJSONRepres.answer, new level1Hint(), new level2Hint(), new level3Hint());
@@ -253,7 +253,7 @@ function askQestion() {
         G.submitBtn.addEventListener("click", submitAnswer); // because submit answer removes itself after it is clicked
         G.answerInput.addEventListener('input', handleInput);
         G.answerInput.addEventListener('keydown', handleKeyDown);
-    }, 500);
+    }, DEFAULT_DELAY);
 }
 
 function storeAnswer(p_answer) {
@@ -272,13 +272,13 @@ function evaluateResult() {
         currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); // if negative returns 0
         lastScore = currentScore;
         G.submitBtn.color = "#4caf50"; G.score.style.color = "#4caf50";
-        setTimeout(() => { G.score.style.color = lastColor }, 300);
+        setTimeout(() => { G.score.style.color = lastColor }, DEFAULT_DELAY/2);
         addProgress(true);
     }
     else if(!isCorrect) {
         currentScore = lastScore;
         G.submitBtn.color = "#bc5150";G.score.style.color = "#bc5150";
-        setTimeout(() => { G.score.style.color = lastColor } , 300);
+        setTimeout(() => { G.score.style.color = lastColor } , DEFAULT_DELAY/2);
         addProgress(false);
     }
     
@@ -378,7 +378,7 @@ function handleInput() {
                 currentSuggestions[key] = false;
             }
         });
-        scrollToBottomWarden(500,800);
+        functionWarden(()=>scrollToBottom(DEFAULT_DELAY),DEFAULT_DELAY+300);
     
     } else {
         currentSuggestions = {};
@@ -387,10 +387,10 @@ function handleInput() {
 }
 
 let isTemporalLock = true;
-function scrollToBottomWarden(p_duration,p_lockingTime) {
+function functionWarden(p_function,p_lockingTime) {
     if (isTemporalLock==true) {
         setTimeout(()=>{isTemporalLock=true;},p_lockingTime)
-        scrollToBottom(p_duration);
+        p_function();
         isTemporalLock=false;
     }
 }
