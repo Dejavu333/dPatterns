@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Mono&display=swap');
+
+
 :root {
         --main-color: hsl(24, 20%, 95%);
         --main-hover-color: hsl(24, 20%, 90%);
@@ -42,9 +45,11 @@ code {
         user-select: none;
         color: var(--font-color);
         margin: none;
+        text-shadow: none !important;
+        font-family: 'Red Hat Mono', monospace !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;   
 }
-
-
 
 #pattern-container,
 #sol-description-container {
@@ -172,11 +177,10 @@ input {
         display: flex;
         padding-top: var(--main-padding);
         padding-bottom: var(--main-padding);
-    }
-    
+} 
 
-
-pre{
+pre {
+        font-family: var(--main-font-family) !important;
         margin: 0 !important;
 }
 
@@ -187,12 +191,14 @@ pre{
         border-radius: 50%;
         background-color: var(--main-color);
         margin-right: var(--main-padding);
-      }
+}
   
       .redcirc {
         background-color: var(--red-color);
+        opacity: 0.85 !important;
       }
   
       .greencirc {
         background-color: var(--cian-color);
+        opacity: 0.85 !important;
       }
