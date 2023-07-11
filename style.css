@@ -202,3 +202,21 @@ pre {
         background-color: var(--cian-color);
         opacity: 0.85 !important;
       }
+
+      .pulse {
+        animation: pulse 3s infinite;
+      }
+
+        @keyframes pulse {
+          0% {
+            box-shadow: 0 0 0 0 var(--grey-color);
+          }
+            
+          70% {
+            box-shadow: 0 0 0 5px transparent;
+          }
+            
+          100% {
+            box-shadow: 0 0 0 0 transparent;
+          }
+        }

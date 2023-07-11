@@ -203,6 +203,7 @@ function populateProgressBar(p_questionsNum) {
         const c = document.createElement("div");
         c.opacity = 0;
         c.classList.add("circle");
+        if (i === 0) { c.classList.add("pulse"); }
         G.progressBar.appendChild(c);
         setTimeout(() => {
         EaseIn(c), 3000*i;
@@ -210,9 +211,15 @@ function populateProgressBar(p_questionsNum) {
     }
 }
 function addProgress(p_isAnswerCorrect, currentQuestionIndex=G.alreadyAskedQuestionIndecies.length-1) {
+
+        G.progressBar.children[currentQuestionIndex].classList.remove("pulse"); 
+
     p_isAnswerCorrect==true?
         G.progressBar.children[currentQuestionIndex].classList.add("greencirc"):
         G.progressBar.children[currentQuestionIndex].classList.add("redcirc");
+    setTimeout(() => {
+    G.progressBar.children[currentQuestionIndex+1].classList.add("pulse");
+    }, DEFAULT_DELAY*2);
 }
 
 function showResultBoard() {
@@ -271,13 +278,13 @@ function evaluateResult() {
         G.correctAnswerCount++;
         currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); // if negative returns 0
         lastScore = currentScore;
-        G.submitBtn.color = "#4caf50"; G.score.style.color = "#4caf50";
+        G.submitBtn.color = "var(--green-color)"; G.score.style.color = "var(--green-color)";
         setTimeout(() => { G.score.style.color = lastColor }, DEFAULT_DELAY/2);
         addProgress(true);
     }
     else if(!isCorrect) {
         currentScore = lastScore;
-        G.submitBtn.color = "#bc5150";G.score.style.color = "#bc5150";
+        G.submitBtn.color = "#var(--red-color)";G.score.style.color = "#var(--red-color)";
         setTimeout(() => { G.score.style.color = lastColor } , DEFAULT_DELAY/2);
         addProgress(false);
     }
