@@ -234,7 +234,7 @@ function showResultBoard() {
     G.resultBoard.style.opacity = 0;
     G.resultBoard.style.display = "inline-block";
     const result = Math.round((G.currentScore/ G.totalScore) * 100);
-    G.resultBoard.innerHTML = `<div class="heartbeat">Reached ${result}%</div><br><button id="restart-btn">Restart</button>`;
+    G.resultBoard.innerHTML = `<div class="heartbeat">You Reached ${result}%</div><br><button id="restart-btn">Restart</button>`;
     // puts an opaq white background behind the result board and everything else
     const opaqueBackground = document.createElement("div");
     opaqueBackground.id = "opaque-background";
