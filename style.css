@@ -48,12 +48,12 @@ code {
         text-shadow: none !important;
         font-family: 'Red Hat Mono', monospace !important;
         font-size: 16px !important;
-        font-weight: 600 !important;   
+        font-weight: 600 !important;
 }
 
 #pattern-container,
 #sol-description-container {
-        margin-top: var(--main-margin); 
+        margin-top: var(--main-margin);
         display: flex;
         flex-wrap: wrap;
         gap: var(--main-margin);
@@ -117,6 +117,10 @@ input {
 }
 
 #result-board {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         text-align: center;
 }
 
@@ -173,11 +177,11 @@ input {
         background-color: rgba(255,255,255,0.8);
 }
 
-#progress-bar {  
+#progress-bar {
         display: flex;
         padding-top: var(--main-padding);
         padding-bottom: var(--main-padding);
-} 
+}
 
 pre {
         font-family: var(--main-font-family) !important;
@@ -192,12 +196,12 @@ pre {
         background-color: var(--main-color);
         margin-right: var(--main-padding);
 }
-  
+
       .redcirc {
         background-color: var(--red-color);
         opacity: 0.85 !important;
       }
-  
+
       .greencirc {
         background-color: var(--cian-color);
         opacity: 0.85 !important;
@@ -211,11 +215,11 @@ pre {
           0% {
             box-shadow: 0 0 0 0 var(--grey-color);
           }
-            
+
           70% {
             box-shadow: 0 0 0 5px transparent;
           }
-            
+
           100% {
             box-shadow: 0 0 0 0 transparent;
           }
