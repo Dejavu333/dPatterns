@@ -5,6 +5,11 @@ G.alreadyAskedQuestionIndecies = [];
 G.givenAnswers = [];
 G.currentQuestion = null;
 G.correctAnswerCount = 0;
+G.currentScore = 0;
+G.totalScore = null;
+G.usedHintTotalCount = 0;
+G.usedHintThisTurnCount = 0;
+G.currentSuggesitons = [];
 
 G.score = document.querySelector("#score");
 G.progressBar = document.querySelector("#progress-bar");
@@ -16,7 +21,7 @@ G.solDescriptionContainer = document.querySelector("#sol-description-container")
 G.answerInput = document.querySelector("#answer-input");
 G.submitBtn = document.querySelector("#submit-btn");
 G.infoBoard = document.querySelector("#info-board");
-G.usedHintCount = 0;
+
 const DEFAULT_DELAY = 500;
 
 //======================================================
@@ -48,7 +53,8 @@ class Question {
         if (this.hintLevel >= this.hints.length) { console.log("No more hints"); return; }
         this.hints[this.hintLevel].reveal(this.answer);
         this.hintLevel++;
-        G.usedHintCount++;
+        G.usedHintTotalCount++;
+        G.usedHintThisTurnCount++;
         scrollToBottom(DEFAULT_DELAY);
     }
 }
@@ -169,7 +175,7 @@ class level3Hint {
     }
 }
 
-//todo check margins, guard on hint button, pulsing progress circle
+
 //======================================================
 // main
 //======================================================
@@ -177,6 +183,7 @@ askQestion();
 G.infoBoard.style.display = "block"; // infos only show up after the question is asked, prevents flickering
 populateProgressBar(G.questionsJSONRepres.length);
 G.hintBtn.addEventListener("click", () => functionWarden(()=>G.currentQuestion.revealHint(),DEFAULT_DELAY*4));
+document.addEventListener("scroll", () => blurElementOutsideViewport(G.answerInput));
 
 
 //======================================================
@@ -187,7 +194,7 @@ function submitAnswer() {
     storeAnswer(G.answerInput.value);
     evaluateResult();
     if (G.alreadyAskedQuestionIndecies.length === G.questionsJSONRepres.length) {
-        console.log("No more questions");
+        console.log("no more questions");
         showResultBoard();
         return;
     }
@@ -210,6 +217,7 @@ function populateProgressBar(p_questionsNum) {
         });
     }
 }
+
 function addProgress(p_isAnswerCorrect, currentQuestionIndex=G.alreadyAskedQuestionIndecies.length-1) {
 
         G.progressBar.children[currentQuestionIndex].classList.remove("pulse"); 
@@ -224,14 +232,9 @@ function addProgress(p_isAnswerCorrect, currentQuestionIndex=G.alreadyAskedQuest
 
 function showResultBoard() {
     G.resultBoard.style.opacity = 0;
-    G.resultBoard.style.position = "absolute";
-    G.resultBoard.style.display = "block";
-    // places it in the middle of the current viewport not the whole page
-    G.resultBoard.style.top = `${window.scrollY + window.innerHeight / 2}px`;
-    G.resultBoard.style.left = `${window.innerWidth / 2}px`;
-
-    const result = Math.round((G.correctAnswerCount / G.givenAnswers.length) * 100);
-    G.resultBoard.innerHTML = `<div class="heartbeat">You reached ${result}%</div><br><button id="restart-btn">Restart</button>`;
+    G.resultBoard.style.display = "inline-block";
+    const result = Math.round((G.currentScore/ G.totalScore) * 100);
+    G.resultBoard.innerHTML = `<div class="heartbeat">Reached ${result}%</div><br><button id="restart-btn">Restart</button>`;
     // puts an opaq white background behind the result board and everything else
     const opaqueBackground = document.createElement("div");
     opaqueBackground.id = "opaque-background";
@@ -267,30 +270,17 @@ function storeAnswer(p_answer) {
     G.givenAnswers.push(p_answer);
 }
 
-let lastScore = 0;
 function evaluateResult() {
     const lastAnswer = G.givenAnswers[G.givenAnswers.length - 1];
     const lastQuestionIndex = G.alreadyAskedQuestionIndecies[G.alreadyAskedQuestionIndecies.length - 1];
     const isCorrect = lastAnswer.toLowerCase().trim() === G.questionsJSONRepres[lastQuestionIndex].answer.toLowerCase().trim();
-    const lastColor = G.score.style.color;
-    let currentScore = 0;
-    if (isCorrect) {
-        G.correctAnswerCount++;
-        currentScore = Math.max(0,G.correctAnswerCount*4-G.usedHintCount); // if negative returns 0
-        lastScore = currentScore;
-        G.submitBtn.color = "var(--green-color)"; G.score.style.color = "var(--green-color)";
-        setTimeout(() => { G.score.style.color = lastColor }, DEFAULT_DELAY/2);
-        addProgress(true);
-    }
-    else if(!isCorrect) {
-        currentScore = lastScore;
-        G.submitBtn.color = "#var(--red-color)";G.score.style.color = "#var(--red-color)";
-        setTimeout(() => { G.score.style.color = lastColor } , DEFAULT_DELAY/2);
-        addProgress(false);
-    }
-    
-    const totalScore = G.alreadyAskedQuestionIndecies.length*4
-    G.score.innerText = `Score: ${currentScore} / ${totalScore}`
+    let delta = 0;
+    isCorrect ? (delta=4-G.usedHintThisTurnCount, G.correctAnswerCount++) : delta = 0;
+    G.usedHintThisTurnCount = 0;
+    G.currentScore += delta;
+    G.totalScore = G.alreadyAskedQuestionIndecies.length*4
+    addProgress(isCorrect);
+    G.score.innerText = `Score: ${G.currentScore} / ${G.totalScore}`
 }
 
 function randomQuestionJSONRepres(p_data) {
@@ -316,7 +306,6 @@ function EaseIn(p_div) {
 }
 
 function scrollToTop(duration) {
-    var start = window.scrollY;
     var startTime = performance.now();
 
     function scrollStep(timestamp) {
@@ -346,7 +335,6 @@ function scrollToBottom(duration) {
     
     function scrollStep(timestamp) {
         var elapsed = timestamp - startTime;
-        var scrollHeight = window.scrollY;
         var progress = Math.min(elapsed / duration, 1);
         var ease = easeInOutCubic(progress);
         window.scrollTo(0, start + (end - start) * ease);
@@ -364,7 +352,6 @@ function scrollToBottom(duration) {
     window.requestAnimationFrame(scrollStep);
 }
 
-let currentSuggestions = {};
 function handleInput() {
     const inputText = G.answerInput.value.toLowerCase().trim();
     if (inputText.length >= 2) { 
@@ -372,23 +359,23 @@ function handleInput() {
         if (matchingPatternDataObjs.length==0) return;
 
         matchingPatternDataObjs.forEach(patternDataObj => {
-            let alreadInSuggestions = currentSuggestions[patternDataObj.name];
+            let alreadInSuggestions = G.currentSuggesitons[patternDataObj.name];
             if (!alreadInSuggestions) {
                 addPatternCardToDOM(patternDataObj,true);
-                currentSuggestions[patternDataObj.name] = true;
+                G.currentSuggesitons[patternDataObj.name] = true;
             }
         });
         // removes suggestions that are no longer valid
-        Object.keys(currentSuggestions).forEach(key => {
-            if (!matchingPatternDataObjs.find(patternDataObj => patternDataObj.name === key)|| currentSuggestions[key]===false) {
+        Object.keys(G.currentSuggesitons).forEach(key => {
+            if (!matchingPatternDataObjs.find(patternDataObj => patternDataObj.name === key)|| G.currentSuggesitons[key]===false) {
                 removePatternCardFromDOM(key);
-                currentSuggestions[key] = false;
+                G.currentSuggesitons[key] = false;
             }
         });
         functionWarden(()=>scrollToBottom(DEFAULT_DELAY),DEFAULT_DELAY+300);
     
     } else {
-        currentSuggestions = {};
+        G.currentSuggesitons = {};
         removeAllPatternCardsFromDOM();
     }
 }
@@ -402,12 +389,6 @@ function functionWarden(p_function,p_lockingTime) {
     }
 }
 
-document.addEventListener("scroll", () => {
-    const inputElement = G.answerInput;
-    if (!isElementInViewport(inputElement)) {
-        inputElement.blur();
-    }
-});
 function isElementInViewport(p_inputElement) {
     const rect = p_inputElement.getBoundingClientRect();
     const breathingRoom = 30;
@@ -450,4 +431,10 @@ function disableInputSuggestions() {
 
 function removeAllPatternCardsFromDOM() {
     G.patternContainer.innerHTML = '';
+}
+
+function blurElementOutsideViewport(p_element) {
+    if (!isElementInViewport(p_element)) {
+        p_element.blur();
+    }
 }
