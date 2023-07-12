@@ -212,9 +212,6 @@ function populateProgressBar(p_questionsNum) {
         c.classList.add("circle");
         if (i === 0) { c.classList.add("pulse"); }
         G.progressBar.appendChild(c);
-        setTimeout(() => {
-        EaseIn(c), 3000*i;
-        });
     }
 }
 
